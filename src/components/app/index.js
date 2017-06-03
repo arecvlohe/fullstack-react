@@ -1,3 +1,4 @@
 import App from './component'
+import enhance from './container'
 
-export default App
+export default enhance(App)

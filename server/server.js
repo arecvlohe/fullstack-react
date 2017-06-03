@@ -4,14 +4,15 @@ const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const config = require('../webpack.config.js')
 const cors = require('./middleware')
 const api = require('./api')
 
-
 const port = 3000
 const app = express()
+mongoose.connect('mongodb://arecvlohe:password@ds161121.mlab.com:61121/fullstack-react')
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
