@@ -5,10 +5,13 @@
   "repository": {},
   "license": "MIT",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server/server.js"
   },
   "dependencies": {
+    "axios": "^0.16.1",
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "mongoose": "^4.10.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4"
   },

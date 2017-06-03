@@ -1,12 +1,22 @@
-const { join } = require('path')
+const { join, resolve } = require('path')
 const express = require('express')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
-const config = require('./webpack.config.js')
+const bodyParser = require('body-parser')
+
+const config = require('../webpack.config.js')
+const cors = require('./middleware')
+const api = require('./api')
+
 
 const port = 3000
 const app = express()
+
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
+app.use(cors)
+app.use('/api', api)
 
 const compiler = webpack(config)
 const middleware = webpackMiddleware(compiler, {
@@ -22,8 +32,8 @@ app.use(webpackHotMiddleware(compiler, {
   path: '/__webpack_hmr',
   heartbeat: 10 * 1000
 }))
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'dist/index.html'))
+app.get('/', (req, res) => {
+  res.sendFile(resolve(__dirname, '..', 'dist/index.html'))
 })
 
 app.listen(port, '127.0.0.1', err => {
