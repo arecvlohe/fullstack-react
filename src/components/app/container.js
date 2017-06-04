@@ -1,11 +1,26 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { compose } from 'recompose'
+
+import * as selectors from './store/selectors'
+import * as actions from './store/actions'
+
+const mapStateToProps = state => {
+  return {
+    todos: selectors.getTodos(state)
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  const { getTodos, addTodo } = actions
+  return bindActionCreators({ getTodos, addTodo }, dispatch)
+}
 
 const enhance = WrappedComponent => class extends Component {
   constructor () {
     super()
     this.state = {
-      todos: [],
       input: ''
     }
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -13,18 +28,13 @@ const enhance = WrappedComponent => class extends Component {
   }
 
   componentDidMount () {
-    axios.get('http://localhost:3000/api/todos').then(({ data }) => {
-      this.setState({ todos: data })
-    })
+    this.props.getTodos()
   }
 
   handleSubmit (e) {
     e.preventDefault()
-    axios.post('http://localhost:3000/api/todos', { title: this.state.input }).then(res => {
-      axios.get('http://localhost:3000/api/todos').then(res => {
-        this.setState({ todos: res.data, input: '' })
-      })
-    })
+    this.props.addTodo(this.state.input)
+    this.setState({ input: '' })
   }
 
   handleInputChange (e) {
@@ -44,4 +54,7 @@ const enhance = WrappedComponent => class extends Component {
 }
 
 
-export default enhance
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  enhance
+)
